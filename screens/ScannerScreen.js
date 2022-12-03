@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from "react"
-import {Alert, Modal, StyleSheet, Text, View, SafeAreaView} from "react-native"
+import {StyleSheet, Text, View, SafeAreaView, Pressable} from "react-native"
 import {BarCodeScanner} from "expo-barcode-scanner"
 import {checkVegan, fetchBarcodes} from "../ScanService"
 import {Colors} from "../utils/colors"
 import {useLayoutEffect} from "react"
 import {ButtonCmp} from "../utils/Button"
 import {IconButton} from "../utils/IconButton"
+import {Button} from "@rneui/themed"
+import {ModalCmp} from "../utils/ModalCmp"
 
 export function ScannerScreen({navigation}) {
   const [hasPremmission, setHasPremission] = useState(null)
@@ -15,6 +17,7 @@ export function ScannerScreen({navigation}) {
   const [showStartBtn, setShowStartBtn] = useState(true)
 
   const [showModal, setShowModal] = useState(false)
+  const [isVegan, setIsVegan] = useState(null)
 
   const askForCameraPermission = () => {
     ;(async () => {
@@ -40,12 +43,16 @@ export function ScannerScreen({navigation}) {
   const handleBarcode = ({type, data}) => {
     setScanned(true)
     setHideCamera(true)
-    const isVegan = checkVegan(data)
-    console.log(isVegan)
+    const itemToCheck = checkVegan(data)
+    console.log(itemToCheck)
     setShowModal(true)
-    if (isVegan) Alert.alert("המוצר טבעוני")
-    else Alert.alert("המוצר לא נמצא במאגרינו")
+    setIsVegan(itemToCheck)
     console.log(`Type:${type} with data:${data}`)
+  }
+
+  const closeModal = () => {
+    console.log("closingg")
+    setShowModal(false)
   }
 
   function finishScan() {
@@ -102,25 +109,50 @@ export function ScannerScreen({navigation}) {
 
   return (
     <>
-      {/* <Modal visible={showModal} animationType="slide">
-        <Text>מודל מודל</Text>
-      </Modal> */}
       <SafeAreaView style={styles.container}>
-        <View style={styles.container}>
-          {showStartBtn && (
-            <ButtonCmp title="תתחיל לסרוק!" onPress={startScanning} />
-          )}
-
-          {!hideCamera && (
-            <View style={styles.barcodebox}>
-              <BarCodeScanner
-                onBarCodeScanned={scanned ? undefined : handleBarcode}
-                style={{height: 400, width: 400}}
+        <View
+          onPress={() => {
+            closeModal
+          }}
+        >
+          <ModalCmp
+            isVegan={isVegan}
+            title={isVegan ? "המוצר טבעוני!" : "המוצר לא קיים במאגרנו"}
+            showModal={showModal}
+            closeModal={closeModal}
+          />
+          <View style={styles.container}>
+            {showStartBtn && (
+              <Button
+                title="התחל לסרוק!"
+                onPress={startScanning}
+                radius={50}
+                buttonStyle={{
+                  backgroundColor: Colors.gray700,
+                  borderWidth: 0.5,
+                }}
+                type="clear"
+                titleStyle={{color: "white", fontSize: 24}}
+                raised
+                containerStyle={{
+                  width: 200,
+                  marginHorizontal: 60,
+                  marginVertical: 20,
+                }}
               />
-            </View>
-          )}
+            )}
 
-          {scanned && <ButtonCmp title={"לסרוק שוב?"} onPress={finishScan} />}
+            {!hideCamera && (
+              <View style={styles.barcodebox}>
+                <BarCodeScanner
+                  onBarCodeScanned={scanned ? undefined : handleBarcode}
+                  style={{height: 400, width: 400}}
+                />
+              </View>
+            )}
+
+            {scanned && <ButtonCmp title={"לסרוק שוב?"} onPress={finishScan} />}
+          </View>
         </View>
       </SafeAreaView>
     </>
@@ -142,5 +174,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: 30,
     backgroundColor: "#39324a",
+  },
+  button: {
+    backgroundColor: Colors.gray700,
   },
 })

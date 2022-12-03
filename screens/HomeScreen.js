@@ -5,14 +5,9 @@ import {
   View,
   SafeAreaView,
 } from "react-native"
-import {Button} from "@rneui/themed"
-import {A} from "@expo/html-elements"
+import {LinkBtn} from "../utils/LinkBtn"
 
 export const HomeScreen = ({navigation}) => {
-  function goScanner() {
-    navigation.navigate("scanner")
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -36,26 +31,34 @@ export const HomeScreen = ({navigation}) => {
               opacity: 0.8,
             }}
           >
-            <Button
+            <LinkBtn
               title="למערכת הסריקה"
-              onPress={goScanner}
-              radius={50}
-              buttonStyle={{
-                borderColor: "rgba(78, 116, 289, 1)",
-                borderWidth: 0.5,
-              }}
+              navigateTo="scanner"
+              radius={20}
+              fontSize={20}
+              textColor="white"
+              borderWidth={1}
               type="clear"
-              titleStyle={{color: "white", fontSize: 20}}
-              raised
               containerStyle={{
                 width: 200,
                 marginHorizontal: 50,
                 marginVertical: 10,
               }}
             />
-            <A href="https://veganizeit.onrender.com/home" style={styles.goWeb}>
-              לאתר המלא
-            </A>
+            <LinkBtn
+              url="https://veganizeit.onrender.com/home"
+              title="לאתר המלא"
+              radius={20}
+              fontSize={20}
+              borderWidth={1}
+              type="clear"
+              textColor="white"
+              containerStyle={{
+                width: 200,
+                marginHorizontal: 50,
+                marginVertical: 10,
+              }}
+            />
           </View>
         </View>
       </ImageBackground>
@@ -81,16 +84,5 @@ const styles = StyleSheet.create({
   txt: {
     color: "white",
     fontSize: 24,
-  },
-  goWeb: {
-    borderColor: "rgba(78, 116, 289, 1)",
-    borderWidth: 0.5,
-    borderRadius: 50,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    textAlign: "center",
-    width: 200,
-    color: "white",
-    fontSize: 20,
   },
 })

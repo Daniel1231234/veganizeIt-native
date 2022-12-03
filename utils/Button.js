@@ -4,8 +4,17 @@ import {Colors} from "./colors"
 
 export function ButtonCmp(props) {
   const {onPress, title = "Save"} = props
+
   return (
-    <Pressable style={styles.button} onPress={onPress}>
+    <Pressable
+      style={({pressed}) => [
+        {
+          backgroundColor: pressed ? Colors.redTavenli : Colors.gray500,
+        },
+        styles.button,
+      ]}
+      onPress={onPress}
+    >
       <Text style={styles.text}>{title}</Text>
     </Pressable>
   )
@@ -18,14 +27,18 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 20,
-    backgroundColor: Colors.gray500,
+    // backgroundColor: Colors.gray500,
     borderWidth: 2,
-    elevation: 7,
-    // backgroundColor: "black",
+    elevation: 10,
   },
   text: {
     fontSize: 20,
-    // lineHeight: 21,
+    fontWeight: "bold",
+    color: "white",
+  },
+  afterPress: {
+    opacity: 0.8,
+    fontSize: 20,
     fontWeight: "bold",
     color: "white",
   },
